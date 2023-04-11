@@ -1,5 +1,5 @@
 
-PWD=`pwd`
+PWD=`pwd`/docker-dashboard
 PYTHON=`which python3`
 SERVICE_FILE=docker-dashboard.service
 DEBUG=2
@@ -9,7 +9,7 @@ Description=A python script for monitoring Docker containers to a DashIO Dashboa
 After=syslog.target network.target
 
 [Service]
-WorkingDirectory=$PWD
+WorkingDirectory=$PWD/docker-dashboard
 ExecStart=$PYTHON $PWD/main.py -i $PWD/docker-dashboard.ini -l $PWD/docker-dashboard.log -v$DEBUG
 
 Restart=always
