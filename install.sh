@@ -22,9 +22,7 @@ EOT
 if [ -f /etc/systemd/system/$SERVICE_FILE ]; then
     sudo systemctl stop $SERVICE_FILE
     sudo systemctl disable $SERVICE_FILE
-else
-    sudo \cp -f ./$SERVICE_FILE /etc/systemd/system/$SERVICE_FILE
 fi
-
+sudo \cp -f ./$SERVICE_FILE /etc/systemd/system/$SERVICE_FILE
 sudo systemctl enable $SERVICE_FILE
 sudo systemctl start $SERVICE_FILE
