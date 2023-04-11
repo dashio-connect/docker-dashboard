@@ -103,8 +103,10 @@ class DockerDashboard:
         logging.info("    Device ID: %s", config_file_parser.get('DashIO', 'DeviceID'))
         logging.info("  Device Name: %s", config_file_parser.get('DashIO', 'DeviceName'))
 
-        self.donker_client = docker.from_env()
-
+        self.docker_client = docker.from_env()
+        self.container_list = self.docker_client.containers.list()
+        logging.debug("Container List: %s", self.container_list)
+        
         self.device = dashio.Device(
             "DockerDashboard",
             config_file_parser.get('DashIO', 'DeviceID'),
