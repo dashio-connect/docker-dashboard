@@ -1,0 +1,39 @@
+[MESSAGES CONTROL]
+disable=
+    locally-disabled,
+    logging-format-interpolation,
+    too-few-public-methods,
+    too-many-instance-attributes,  # <-- Ensure at least this entry.
+    fixme,
+    no-member,
+    unused-argument,
+    attribute-defined-outside-init,
+    duplicate-code
+
+
+[FORMAT]
+max-line-length=240
+
+[TYPECHECK]
+# List of module names for which member attributes should not be checked
+# (useful for modules/projects where namespaces are manipulated during runtime
+# and thus existing member attributes cannot be deduced by static analysis. It
+# supports qualified module names, as well as Unix pattern matching.
+
+[DESIGN]
+max-locals=25
+max-args=16
+
+[SIMILARITIES]
+
+# Minimum lines number of a similarity.
+min-similarity-lines=8
+
+# Ignore comments when computing similarities.
+ignore-comments=yes
+
+# Ignore docstrings when computing similarities.
+ignore-docstrings=yes
+
+# Ignore imports when computing similarities.
+ignore-imports=yes

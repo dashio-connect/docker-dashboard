@@ -73,7 +73,7 @@ class DockerDashboard:
         # Catch CNTRL-C signel
 
         signal_handler = SignalHandler()
-        
+
         args = self.parse_commandline_arguments()
         self.init_logging(args.logfilename, args.verbose)
 
