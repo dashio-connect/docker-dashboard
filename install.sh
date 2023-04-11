@@ -1,4 +1,5 @@
 
+#!/bin/bash
 PWD=`pwd`
 PYTHON=`which python3`
 SERVICE_FILE=docker-dashboard.service
