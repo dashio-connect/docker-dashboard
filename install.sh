@@ -1,5 +1,5 @@
 
-PWD=`pwd`/docker-dashboard
+PWD=`pwd`
 PYTHON=`which python3`
 SERVICE_FILE=docker-dashboard.service
 DEBUG=2
@@ -10,7 +10,7 @@ After=syslog.target network.target
 
 [Service]
 WorkingDirectory=$PWD/docker-dashboard
-ExecStart=$PYTHON $PWD/main.py -i $PWD/docker-dashboard.ini -l $PWD/docker-dashboard.log -v$DEBUG
+ExecStart=$PYTHON $PWD/docker-dashboard/main.py -i $PWD/docker-dashboard/docker-dashboard.ini -l $PWD/docker-dashboard/docker-dashboard.log -v$DEBUG
 
 Restart=always
 RestartSec=10
