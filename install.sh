@@ -20,10 +20,12 @@ RestartSec=10
 WantedBy=multi-user.target
 EOT
 
+pip3 install -r requirements.txt
+
 if [ -f /etc/systemd/system/$SERVICE_FILE ]; then
-    sudo systemctl stop $SERVICE_FILE
-    sudo systemctl disable $SERVICE_FILE
+    systemctl stop $SERVICE_FILE
+    systemctl disable $SERVICE_FILE
 fi
-sudo \cp -f ./$SERVICE_FILE /etc/systemd/system/$SERVICE_FILE
-sudo systemctl enable $SERVICE_FILE
-sudo systemctl start $SERVICE_FILE
+\cp -f ./$SERVICE_FILE /etc/systemd/system/$SERVICE_FILE
+systemctl enable $SERVICE_FILE
+systemctl start $SERVICE_FILE
