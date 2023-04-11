@@ -116,6 +116,8 @@ class DockerDashboard:
             config_file_parser.get('DashIO', 'username'),
             config_file_parser.get('DashIO', 'password')
         )
+
+        self.dash_con.add_device(self.device)
         self.device.config_revision = 1
         while signal_handler.can_run():
             time.sleep(1)
