@@ -7,6 +7,22 @@ import time
 import configparser
 import shortuuid
 
+
+class SignalHandler:
+    shutdown_requested = False
+
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.request_shutdown)
+        signal.signal(signal.SIGTERM, self.request_shutdown)
+
+    def request_shutdown(self, *args):
+        logging.debug('Request to shutdown received, stopping')
+        self.shutdown_requested = True
+
+    def can_run(self):
+        return not self.shutdown_requested
+
+
 class DockerDashboard:
     def signal_cntrl_c(self, os_signal, os_frame):
         self.shutdown = True
@@ -55,8 +71,9 @@ class DockerDashboard:
     def __init__(self):
 
         # Catch CNTRL-C signel
-        signal.signal(signal.SIGINT, self.signal_cntrl_c)
-        self.shutdown = False
+
+        signal_handler = SignalHandler()
+        
         args = self.parse_commandline_arguments()
         self.init_logging(args.logfilename, args.verbose)
 
@@ -86,6 +103,8 @@ class DockerDashboard:
         logging.info("    Device ID: %s", config_file_parser.get('DashIO', 'DeviceID'))
         logging.info("  Device Name: %s", config_file_parser.get('DashIO', 'DeviceName'))
 
+        self.donker_client = docker.from_env()
+
         self.device = dashio.Device(
             "DockerDashboard",
             config_file_parser.get('DashIO', 'DeviceID'),
@@ -98,7 +117,7 @@ class DockerDashboard:
             config_file_parser.get('DashIO', 'password')
         )
         self.device.config_revision = 1
-        while not self.shutdown:
+        while signal_handler.can_run():
             time.sleep(1)
 
         self.dash_con.close()
