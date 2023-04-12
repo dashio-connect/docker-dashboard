@@ -24,8 +24,6 @@ class SignalHandler:
 
 
 class DockerDashboard:
-    def signal_cntrl_c(self, os_signal, os_frame):
-        self.shutdown = True
 
     def init_logging(self, logfilename, level):
         log_level = logging.WARN
@@ -71,7 +69,6 @@ class DockerDashboard:
     def __init__(self):
 
         # Catch CNTRL-C signel
-
         signal_handler = SignalHandler()
 
         args = self.parse_commandline_arguments()
@@ -105,8 +102,10 @@ class DockerDashboard:
 
         self.docker_client = docker.from_env()
         self.container_list = self.docker_client.containers.list()
-        logging.debug("Container List: %s", self.container_list)
-        
+        for container in self.container_list:
+
+            logging.debug("Container Name: %s, ", container.name)
+
         self.device = dashio.Device(
             "DockerDashboard",
             config_file_parser.get('DashIO', 'DeviceID'),
