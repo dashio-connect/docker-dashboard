@@ -23,7 +23,7 @@ class SignalHandler:
         return not self.shutdown_requested
 
 def to_camel_case(text: str) -> str:
-    camel_string = "".join(x.capitalize() for x in text.lower().split("_"))
+    camel_string = " ".join(x.capitalize() for x in text.lower().split("_-"))
     return text[0].lower() + camel_string[1:]
 
 class DockerDashboard:
@@ -129,12 +129,10 @@ class DockerDashboard:
             config_file_parser.get('DashIO', 'username'),
             config_file_parser.get('DashIO', 'password')
         )
-        self.container_map = {}
         for container in self.container_list:
             logging.debug("Container Name: %s, ", container.name)
-            cont_name = to_camel_case(container.name)
+            cont_name = container.name.replace("_", " ")
             self.c_select.add_selection(cont_name)
-            self.container_map[cont_name] = container
 
         self.c_select.add_receive_message_callback(self.container_selection)
         self.dash_con.add_device(self.device)
