@@ -97,21 +97,25 @@ class DockerDashboard:
         if not new_ini_file:
             config_file_parser.read(ini_file)
 
-        logging.info("    Device ID: %s", config_file_parser.get('DashIO', 'DeviceID'))
-        logging.info("  Device Name: %s", config_file_parser.get('DashIO', 'DeviceName'))
+        device_id = config_file_parser.get('DashIO', 'DeviceID')
+        device_name = config_file_parser.get('DashIO', 'DeviceName')
+        logging.info("    Device ID: %s", device_id)
+        logging.info("  Device Name: %s", device_name)
 
         self.docker_client = docker.from_env()
         self.container_list = self.docker_client.containers.list()
         for container in self.container_list:
-
             logging.debug("Container Name: %s, ", container.name)
+
+        d_view = dashio.DeviceView("dv1", device_name)
 
         self.device = dashio.Device(
             "DockerDashboard",
-            config_file_parser.get('DashIO', 'DeviceID'),
-            config_file_parser.get('DashIO', 'DeviceName')
+            device_id,
+            device_name
         )
         self.device.use_cfg64()
+        self.device.add_control(d_view)
 
         self.dash_con = dashio.DashConnection(
             config_file_parser.get('DashIO', 'username'),
@@ -121,7 +125,7 @@ class DockerDashboard:
         self.dash_con.add_device(self.device)
         self.device.config_revision = 1
         while signal_handler.can_run():
-            time.sleep(1)
+            time.sleep(10)
 
         self.dash_con.close()
         self.device.close()
