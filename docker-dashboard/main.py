@@ -6,7 +6,7 @@ import docker
 import time
 import configparser
 import shortuuid
-
+import re
 
 class SignalHandler:
     shutdown_requested = False
@@ -22,9 +22,9 @@ class SignalHandler:
     def can_run(self):
         return not self.shutdown_requested
 
-def to_camel_case(text: str) -> str:
-    camel_string = " ".join(x.capitalize() for x in text.lower().split("_-"))
-    return text[0].lower() + camel_string[1:]
+def to_nicer_str(text: str) -> str:
+    camel_string = " ".join(x.capitalize() for x in re.split("_|-", text.lower()))
+    return camel_string
 
 class DockerDashboard:
 
@@ -131,14 +131,14 @@ class DockerDashboard:
         )
         for container in self.container_list:
             logging.debug("Container Name: %s, ", container.name)
-            cont_name = to_camel_case(container.name)
+            cont_name = to_nicer_str(container.name)
             self.c_select.add_selection(cont_name)
 
         self.c_select.add_receive_message_callback(self.container_selection)
         self.dash_con.add_device(self.device)
         self.device.config_revision = 1
         while signal_handler.can_run():
-            time.sleep(10)
+            time.sleep(1)
 
         self.dash_con.close()
         self.device.close()
