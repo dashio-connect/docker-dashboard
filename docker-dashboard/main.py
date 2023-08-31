@@ -131,7 +131,7 @@ class DockerDashboard:
         )
         for container in self.container_list:
             logging.debug("Container Name: %s, ", container.name)
-            cont_name = container.name.replace("_", " ")
+            cont_name = to_camel_case(container.name)
             self.c_select.add_selection(cont_name)
 
         self.c_select.add_receive_message_callback(self.container_selection)
