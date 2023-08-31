@@ -22,6 +22,9 @@ class SignalHandler:
     def can_run(self):
         return not self.shutdown_requested
 
+def to_camel_case(text: str) -> str:
+    camel_string = "".join(x.capitalize() for x in text.lower().split("_"))
+    return text[0].lower() + camel_string[1:]
 
 class DockerDashboard:
 
@@ -66,6 +69,9 @@ class DockerDashboard:
         args = parser.parse_args()
         return args
 
+    def container_selection(self, rx_msg):
+        logging.debug("Selector RX: %s", rx_msg)
+
     def __init__(self):
 
         # Catch CNTRL-C signel
@@ -104,8 +110,6 @@ class DockerDashboard:
 
         self.docker_client = docker.from_env()
         self.container_list = self.docker_client.containers.list()
-        for container in self.container_list:
-            logging.debug("Container Name: %s, ", container.name)
 
         d_view = dashio.DeviceView("dv1", device_name)
 
@@ -117,11 +121,22 @@ class DockerDashboard:
         self.device.use_cfg64()
         self.device.add_control(d_view)
 
+        self.c_select = dashio.Selector("cs1", "Container", control_position=dashio.ControlPosition(0.0, 0.90625, 1.0, 0.09375))
+        d_view.add_control(self.c_select)
+        self.device.add_control(self.c_select)
+
         self.dash_con = dashio.DashConnection(
             config_file_parser.get('DashIO', 'username'),
             config_file_parser.get('DashIO', 'password')
         )
+        self.container_map = {}
+        for container in self.container_list:
+            logging.debug("Container Name: %s, ", container.name)
+            cont_name = to_camel_case(container.name)
+            self.c_select.add_selection(cont_name)
+            self.container_map[cont_name] = container
 
+        self.c_select.add_receive_message_callback(self.container_selection)
         self.dash_con.add_device(self.device)
         self.device.config_revision = 1
         while signal_handler.can_run():
