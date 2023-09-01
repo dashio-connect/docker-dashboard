@@ -185,8 +185,8 @@ class DockerDashboard:
             off_color=dashio.Color.RED,
             control_position=dashio.ControlPosition(0.36363636363636, 0.71875, 0.2727272727272, 0.15625)
         )
-        d_view.add_control(self.start_button)
-        self.device.add_control(self.start_button)
+        d_view.add_control(self.stop_button)
+        self.device.add_control(self.stop_button)
 
         self.restart_button = dashio.Button(
             "restartBtn",
@@ -196,8 +196,8 @@ class DockerDashboard:
             off_color=dashio.Color.MAROON,
             control_position=dashio.ControlPosition(0.36363636363636, 0.71875, 0.2727272727272, 0.15625)
         )
-        d_view.add_control(self.start_button)
-        self.device.add_control(self.start_button)
+        d_view.add_control(self.restart_button)
+        self.device.add_control(self.restart_button)
 
         self.get_container_list()
         self.device.config_revision = 1
