@@ -69,8 +69,31 @@ class DockerDashboard:
         args = parser.parse_args()
         return args
 
+    def update_container_controls(self, index: int):
+        self.container_list_index = index
+        current_container = self.container_list[index]
+        self.status_tx.text = current_container.status
+        if current_container.status == "running":
+            self.start_button.btn_state = dashio.ButtonState.ON
+            self.stop_button.btn_state = dashio.ButtonState.OFF
+        else:
+            self.start_button.btn_state = dashio.ButtonState.OFF
+            self.stop_button.btn_state = dashio.ButtonState.ON
+
     def container_selection(self, rx_msg):
         logging.debug("Selector RX: %s", rx_msg)
+        try:
+            c_index = int(rx_msg[3])
+        except (ValueError, IndexError):
+            return
+        self.update_container_controls(c_index)
+
+    def get_container_list(self):
+        self.container_list = self.docker_client.containers.list()
+        for container in self.container_list:
+            logging.debug("Container Name: %s, ", container.name)
+            cont_name = to_nicer_str(container.name)
+            self.c_select.add_selection(cont_name)
 
     def __init__(self):
 
@@ -109,8 +132,7 @@ class DockerDashboard:
         logging.info("  Device Name: %s", device_name)
 
         self.docker_client = docker.from_env()
-        self.container_list = self.docker_client.containers.list()
-
+        self.container_list_index = 0
         d_view = dashio.DeviceView("dv1", device_name)
 
         self.device = dashio.Device(
@@ -129,16 +151,63 @@ class DockerDashboard:
             config_file_parser.get('DashIO', 'username'),
             config_file_parser.get('DashIO', 'password')
         )
-        for container in self.container_list:
-            logging.debug("Container Name: %s, ", container.name)
-            cont_name = to_nicer_str(container.name)
-            self.c_select.add_selection(cont_name)
 
         self.c_select.add_receive_message_callback(self.container_selection)
         self.dash_con.add_device(self.device)
+
+        self.status_tx = dashio.TextBox(
+            "ststusTx",
+            "Status",
+            title_position=dashio.TitlePosition.BOTTOM,
+            text_align=dashio.TextAlignment.CENTER,
+            keyboard_type=dashio.Keyboard.NONE,
+            control_position=dashio.ControlPosition(0.0, 0.5625, 1.0, 0.125)
+        )
+        d_view.add_control(self.status_tx)
+        self.device.add_control(self.status_tx)
+
+        self.start_button = dashio.Button(
+            "startBtn",
+            "Start",
+            icon_name=dashio.Icon.PLAY,
+            on_color=dashio.Color.RED,
+            off_color=dashio.Color.LIME,
+            control_position=dashio.ControlPosition(0.0, 0.71875, 0.2727272727272, 0.15625)
+        )
+        d_view.add_control(self.start_button)
+        self.device.add_control(self.start_button)
+
+        self.stop_button = dashio.Button(
+            "stopBtn",
+            "Stop",
+            icon_name=dashio.Icon.STOP,
+            on_color=dashio.Color.LIME,
+            off_color=dashio.Color.RED,
+            control_position=dashio.ControlPosition(0.36363636363636, 0.71875, 0.2727272727272, 0.15625)
+        )
+        d_view.add_control(self.start_button)
+        self.device.add_control(self.start_button)
+
+        self.restart_button = dashio.Button(
+            "restartBtn",
+            "Restart",
+            icon_name=dashio.Icon.REFRESH,
+            on_color=dashio.Color.GREEN,
+            off_color=dashio.Color.MAROON,
+            control_position=dashio.ControlPosition(0.36363636363636, 0.71875, 0.2727272727272, 0.15625)
+        )
+        d_view.add_control(self.start_button)
+        self.device.add_control(self.start_button)
+
+        self.get_container_list()
         self.device.config_revision = 1
+        timer = 0
         while signal_handler.can_run():
             time.sleep(1)
+            timer += 1
+            if timer > 59:
+                self.get_container_list()
+                timer = 0
 
         self.dash_con.close()
         self.device.close()
