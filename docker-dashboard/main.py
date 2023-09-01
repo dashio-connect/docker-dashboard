@@ -74,11 +74,9 @@ class DockerDashboard:
         current_container = self.container_list[index]
         self.status_tx.text = current_container.status
         if current_container.status == "running":
-            self.start_stop_button.btn_state = dashio.ButtonState.OFF
-            self.start_stop_button.icon_name = dashio.Icon.STOP
+            self.start_stop_button.send_button(dashio.ButtonState.OFF, dashio.Icon.STOP, "Stop")
         else:
-            self.start_stop_button.btn_state = dashio.ButtonState.ON
-            self.start_stop_button.btn_state = dashio.Icon.PLAY
+            self.start_stop_button.send_button(dashio.ButtonState.ON, dashio.Icon.PLAY, "Start")
 
     def container_selection(self, rx_msg):
         logging.debug("Selector RX: %s", rx_msg)
