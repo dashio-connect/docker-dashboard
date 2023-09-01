@@ -87,7 +87,7 @@ class DockerDashboard:
         self.update_container_controls(c_index)
 
     def get_container_list(self):
-        self.container_list = self.docker_client.containers.list()
+        self.container_list = self.docker_client.containers.list(all=True)
         self.c_select.selection_list.clear()
         for container in self.container_list:
             logging.debug("Container Name: %s, ", container.name)
