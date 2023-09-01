@@ -158,7 +158,7 @@ class DockerDashboard:
         self.status_tx = dashio.TextBox(
             "ststusTx",
             "Status",
-            title_position=dashio.TitlePosition.BOTTOM,
+            title_position=dashio.TitlePosition.TOP,
             text_align=dashio.TextAlignment.CENTER,
             keyboard_type=dashio.Keyboard.NONE,
             control_position=dashio.ControlPosition(0.0, 0.5625, 1.0, 0.125)
