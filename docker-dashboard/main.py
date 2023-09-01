@@ -74,11 +74,11 @@ class DockerDashboard:
         current_container = self.container_list[index]
         self.status_tx.text = current_container.status
         if current_container.status == "running":
-            self.start_button.btn_state = dashio.ButtonState.ON
-            self.stop_button.btn_state = dashio.ButtonState.OFF
+            self.start_stop_button.btn_state = dashio.ButtonState.OFF
+            self.start_stop_button.icon_name = dashio.Icon.STOP
         else:
-            self.start_button.btn_state = dashio.ButtonState.OFF
-            self.stop_button.btn_state = dashio.ButtonState.ON
+            self.start_stop_button.btn_state = dashio.ButtonState.ON
+            self.start_stop_button.btn_state = dashio.Icon.PLAY
 
     def container_selection(self, rx_msg):
         logging.debug("Selector RX: %s", rx_msg)
@@ -166,27 +166,18 @@ class DockerDashboard:
         d_view.add_control(self.status_tx)
         self.device.add_control(self.status_tx)
 
-        self.start_button = dashio.Button(
-            "startBtn",
-            "Start",
+        self.start_stop_button = dashio.Button(
+            "startStopBtn",
+            "startstop",
+            text="",
+            title_position=dashio.TitlePosition.NONE,
             icon_name=dashio.Icon.PLAY,
             on_color=dashio.Color.RED,
             off_color=dashio.Color.LIME,
-            control_position=dashio.ControlPosition(0.0, 0.71875, 0.2727272727272, 0.15625)
+            control_position=dashio.ControlPosition(0.0, 0.71875, 0.5, 0.15625)
         )
-        d_view.add_control(self.start_button)
-        self.device.add_control(self.start_button)
-
-        self.stop_button = dashio.Button(
-            "stopBtn",
-            "Stop",
-            icon_name=dashio.Icon.STOP,
-            on_color=dashio.Color.LIME,
-            off_color=dashio.Color.RED,
-            control_position=dashio.ControlPosition(0.36363636363636, 0.71875, 0.2727272727272, 0.15625)
-        )
-        d_view.add_control(self.stop_button)
-        self.device.add_control(self.stop_button)
+        d_view.add_control(self.start_stop_button)
+        self.device.add_control(self.start_stop_button)
 
         self.restart_button = dashio.Button(
             "restartBtn",
@@ -194,7 +185,7 @@ class DockerDashboard:
             icon_name=dashio.Icon.REFRESH,
             on_color=dashio.Color.GREEN,
             off_color=dashio.Color.MAROON,
-            control_position=dashio.ControlPosition(0.72727272727, 0.71875, 0.2727272727272, 0.15625)
+            control_position=dashio.ControlPosition(0.5, 0.71875, 0.5, 0.15625)
         )
         d_view.add_control(self.restart_button)
         self.device.add_control(self.restart_button)
