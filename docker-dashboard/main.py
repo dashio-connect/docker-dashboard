@@ -88,6 +88,7 @@ class DockerDashboard:
 
     def get_container_list(self):
         self.container_list = self.docker_client.containers.list()
+        self.c_select.selection_list.clear()
         for container in self.container_list:
             logging.debug("Container Name: %s, ", container.name)
             cont_name = to_nicer_str(container.name)
