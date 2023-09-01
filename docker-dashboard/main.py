@@ -93,9 +93,9 @@ class DockerDashboard:
             logging.debug("Container Name: %s, ", container.name)
             cont_name = to_nicer_str(container.name)
             if container.status == "running":
-                self.c_select.add_selection("✅" + cont_name)
+                self.c_select.add_selection("✅ " + cont_name)
             else:
-                self.c_select.add_selection("❌" + cont_name)
+                self.c_select.add_selection("❌ " + cont_name)
 
     def __init__(self):
 
