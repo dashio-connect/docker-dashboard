@@ -194,7 +194,7 @@ class DockerDashboard:
             icon_name=dashio.Icon.REFRESH,
             on_color=dashio.Color.GREEN,
             off_color=dashio.Color.MAROON,
-            control_position=dashio.ControlPosition(0.36363636363636, 0.71875, 0.2727272727272, 0.15625)
+            control_position=dashio.ControlPosition(0.72727272727, 0.71875, 0.2727272727272, 0.15625)
         )
         d_view.add_control(self.restart_button)
         self.device.add_control(self.restart_button)
