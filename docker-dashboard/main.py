@@ -97,9 +97,7 @@ class DockerDashboard:
                 self.c_select.add_selection("✅: " + cont_name)
             else:
                 self.c_select.add_selection("❌: " + cont_name)
-        if self.container_list[self.container_list_index].name in self.c_select.selection_list:
-            self.c_select.set_selected(self.container_list[self.container_list_index].name)
-        else:
+        if self.container_list[self.container_list_index].name not in self.c_select.selection_list:
             self.update_container_controls(0)
 
     def __init__(self):
