@@ -84,6 +84,7 @@ class DockerDashboard:
             c_index = int(rx_msg[3])
         except (ValueError, IndexError):
             return
+        self.c_select.position = c_index
         self.update_container_controls(c_index)
 
     def get_container_list(self):
@@ -93,9 +94,13 @@ class DockerDashboard:
             logging.debug("Container Name: %s, ", container.name)
             cont_name = to_nicer_str(container.name)
             if container.status == "running":
-                self.c_select.add_selection("✅ " + cont_name)
+                self.c_select.add_selection("✅: " + cont_name)
             else:
-                self.c_select.add_selection("❌ " + cont_name)
+                self.c_select.add_selection("❌: " + cont_name)
+        if self.container_list[self.container_list_index].name in self.c_select.selection_list:
+            self.c_select.set_selected(self.container_list[self.container_list_index].name)
+        else:
+            self.update_container_controls(0)
 
     def __init__(self):
 
