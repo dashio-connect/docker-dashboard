@@ -178,7 +178,7 @@ class DockerDashboard:
         self.dash_con.add_device(self.device)
 
         self.status_tx = dashio.TextBox(
-            "ststusTx",
+            "statusTx",
             "Status",
             title_position=dashio.TitlePosition.TOP,
             text_align=dashio.TextAlignment.CENTER,
