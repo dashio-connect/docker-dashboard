@@ -101,16 +101,19 @@ class DockerDashboard:
         logging.debug("Restart Btn RX: %s", rx_msg)
         self.container_list[self.container_list_index].restart()
 
-    def get_container_list(self):
-        self.container_list = self.docker_client.containers.list(all=True)
+    def update_selector_list(self):
         self.c_select.selection_list.clear()
         for container in self.container_list:
-            logging.debug("Container Name: %s, ", container.name)
             cont_name = to_nicer_str(container.name)
             if container.status == "running":
                 self.c_select.add_selection("✅: " + cont_name)
             else:
                 self.c_select.add_selection("❌: " + cont_name)
+        self.c_select.selection_list()
+
+    def get_container_list(self):
+        self.container_list = self.docker_client.containers.list(all=True)
+        self.update_selector_list()
         if self.container_list[self.container_list_index].name not in self.c_select.selection_list:
             self.update_container_controls(0)
 
@@ -217,9 +220,12 @@ class DockerDashboard:
         while signal_handler.can_run():
             time.sleep(1)
             timer += 1
-            if timer > 59:
-                self.get_container_list()
-                timer = 0
+            if timer % 10 == 0:
+                if timer < 59:
+                    self.update_selector_list()
+                else:
+                    self.get_container_list()
+                    timer = 0
 
         self.dash_con.close()
         self.device.close()
