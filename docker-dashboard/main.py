@@ -87,6 +87,12 @@ class DockerDashboard:
         self.c_select.position = c_index
         self.update_container_controls(c_index)
 
+    def start_stop_rx(self, rx_msg):
+        logging.debug("Start Stop Btn RX: %s", rx_msg)
+
+    def restart_rx(self, rx_msg):
+        logging.debug("Restart Btn RX: %s", rx_msg)
+
     def get_container_list(self):
         self.container_list = self.docker_client.containers.list(all=True)
         self.c_select.selection_list.clear()
@@ -177,23 +183,25 @@ class DockerDashboard:
             text="",
             title_position=dashio.TitlePosition.NONE,
             icon_name=dashio.Icon.PLAY,
-            on_color=dashio.Color.RED,
-            off_color=dashio.Color.LIME,
+            on_color=dashio.Color.LIME,
+            off_color=dashio.Color.RED,
             control_position=dashio.ControlPosition(0.0, 0.71875, 0.5, 0.15625)
         )
         d_view.add_control(self.start_stop_button)
         self.device.add_control(self.start_stop_button)
+        self.start_stop_button.add_receive_message_callback(self.start_stop_rx)
 
         self.restart_button = dashio.Button(
             "restartBtn",
             "Restart",
             icon_name=dashio.Icon.REFRESH,
-            on_color=dashio.Color.GREEN,
-            off_color=dashio.Color.MAROON,
+            on_color=dashio.Color.DARK_GOLDEN_ROD,
+            off_color=dashio.Color.DARK_GOLDEN_ROD,
             control_position=dashio.ControlPosition(0.5, 0.71875, 0.5, 0.15625)
         )
         d_view.add_control(self.restart_button)
         self.device.add_control(self.restart_button)
+        self.restart_button.add_receive_message_callback(self.restart_rx)
 
         self.get_container_list()
         self.device.config_revision = 1
