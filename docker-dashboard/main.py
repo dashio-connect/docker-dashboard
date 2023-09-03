@@ -109,7 +109,7 @@ class DockerDashboard:
                 self.c_select.add_selection("✅: " + cont_name)
             else:
                 self.c_select.add_selection("❌: " + cont_name)
-        self.c_select.selection_list()
+        self.c_select.send_selection()
 
     def get_container_list(self):
         self.container_list = self.docker_client.containers.list(all=True)
