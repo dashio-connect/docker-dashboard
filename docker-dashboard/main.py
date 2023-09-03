@@ -89,9 +89,17 @@ class DockerDashboard:
 
     def start_stop_rx(self, rx_msg):
         logging.debug("Start Stop Btn RX: %s", rx_msg)
+        container = self.container_list[self.container_list_index]
+        if container.status == "running":
+            container.stop()
+            self.start_stop_button.send_button(dashio.ButtonState.ON, dashio.Icon.PLAY, "Start")
+        else:
+            container.start()
+            self.start_stop_button.send_button(dashio.ButtonState.OFF, dashio.Icon.STOP, "Stop")
 
     def restart_rx(self, rx_msg):
         logging.debug("Restart Btn RX: %s", rx_msg)
+        self.container_list[self.container_list_index].restart()
 
     def get_container_list(self):
         self.container_list = self.docker_client.containers.list(all=True)
