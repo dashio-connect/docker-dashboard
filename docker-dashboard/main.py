@@ -169,6 +169,7 @@ class DockerDashboard:
         )
         self.device.use_cfg64()
         self.device.add_control(d_view)
+        self.device.config_revision = 2
 
         self.c_select = dashio.Selector("cs1", "Container", control_position=dashio.ControlPosition(0.0, 0.84375, 0.07727272727272, 0.15625))
         d_view.add_control(self.c_select)
@@ -236,7 +237,6 @@ class DockerDashboard:
         self.controls_menu.add_control(self.rescan_containers_button)
         self.device.add_control(self.rescan_containers_button)
         self.rescan_containers_button.add_receive_message_callback(self.rescan_rx)
-
 
         self.get_container_list()
         self.device.config_revision = 1
