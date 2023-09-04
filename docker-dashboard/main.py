@@ -184,10 +184,10 @@ class DockerDashboard:
         signal_handler = SignalHandler()
         #  Socket to receive messages on
         zmq_url = "inproc://log_push_pull"
-
+        self.context = zmq.Context.instance()
         task_receiver = self.context.socket(zmq.PULL)
         task_receiver.bind(zmq_url)
-
+        self.timer = TimerThread(10.0, zmq_url, self.context)
         args = self.parse_commandline_arguments()
         self.init_logging(args.logfilename, args.verbose)
 
@@ -226,7 +226,8 @@ class DockerDashboard:
         self.device = dashio.Device(
             "DockerDashboard",
             device_id,
-            device_name
+            device_name,
+            context=self.context
         )
         self.device.use_cfg64()
         self.device.add_control(d_view)
@@ -307,6 +308,8 @@ class DockerDashboard:
 
         self.get_container_list()
         self.device.config_revision = 1
+
+        self.cont_logs = LogMonitorThread()
 
         poller = zmq.Poller()
         poller.register(task_receiver, zmq.POLLIN)
