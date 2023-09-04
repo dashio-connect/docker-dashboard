@@ -99,7 +99,8 @@ class DockerDashboard:
 
     def restart_rx(self, rx_msg):
         logging.debug("Restart Btn RX: %s", rx_msg)
-        self.container_list[self.container_list_index].restart()
+        container = self.container_list[self.container_list_index]
+        container.restart()
 
     def update_selector_list(self):
         self.c_select.selection_list.clear()
@@ -220,11 +221,13 @@ class DockerDashboard:
         while signal_handler.can_run():
             time.sleep(1)
             timer += 1
+            """
             try:
-                for log in self.container_list[self.container_list_index].logs(stream=False, follow=True):
+                for log in self.container_list[self.container_list_index].logs():
                     logging.debug(log.decode('utf-8').strip())
             except Exception as e:
                 logging.debug(f"An error occurred: {str(e)}")
+            """
             if timer % 10 == 0:
                 if timer < 59:
                     self.update_selector_list()
