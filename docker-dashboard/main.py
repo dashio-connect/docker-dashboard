@@ -225,7 +225,7 @@ class DockerDashboard:
         self.restart_button = dashio.Button(
             "restartBtn",
             "Restart",
-            icon_name=dashio.Icon.COG,
+            icon_name=dashio.Icon.REFRESH,
             on_color=dashio.Color.FIREBRICK,
             off_color=dashio.Color.FIREBRICK
         )
@@ -236,7 +236,7 @@ class DockerDashboard:
         self.rescan_containers_button = dashio.Button(
             "rescanBtn",
             "Rescan Containers",
-            icon_name=dashio.Icon.REFRESH,
+            icon_name=dashio.Icon.COG,
             on_color=dashio.Color.DARK_GOLDEN_ROD,
             off_color=dashio.Color.DARK_GOLDEN_ROD
         )
