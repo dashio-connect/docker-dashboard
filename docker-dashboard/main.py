@@ -104,7 +104,7 @@ class DockerDashboard:
 
     def rescan_rx(self, rx_msg):
         logging.debug("Rescan Btn RX: %s", rx_msg)
-        self.update_selector_list()
+        self.get_container_list()
 
     def update_selector_list(self):
         self.c_select.selection_list.clear()
@@ -252,7 +252,7 @@ class DockerDashboard:
                 logging.debug(f"An error occurred: {str(e)}")
             """
             if timer % 10 == 0:
-                self.get_container_list()
+                self.update_selector_list()
                 timer = 0
 
         self.dash_con.close()
