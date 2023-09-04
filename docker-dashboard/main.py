@@ -171,7 +171,7 @@ class DockerDashboard:
         self.device.add_control(d_view)
         self.device.config_revision = 2
 
-        self.c_select = dashio.Selector("cs1", "Container", control_position=dashio.ControlPosition(0.0, 0.84375, 0.07727272727272, 0.15625))
+        self.c_select = dashio.Selector("cs1", "Container", control_position=dashio.ControlPosition(0.0, 0.84375, 0.7727272727272, 0.15625))
         d_view.add_control(self.c_select)
         self.device.add_control(self.c_select)
 
