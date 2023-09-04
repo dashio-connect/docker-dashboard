@@ -221,7 +221,7 @@ class DockerDashboard:
             time.sleep(1)
             timer += 1
             try:
-                for log in self.container_list[self.container_list_index].logs(stream=True, follow=True):
+                for log in self.container_list[self.container_list_index].logs(stream=False, follow=True):
                     logging.debug(log.decode('utf-8').strip())
             except Exception as e:
                 logging.debug(f"An error occurred: {str(e)}")
