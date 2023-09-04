@@ -7,6 +7,8 @@ import time
 import configparser
 import shortuuid
 import re
+import zmq
+import threading
 
 class SignalHandler:
     shutdown_requested = False
@@ -25,6 +27,60 @@ class SignalHandler:
 def to_nicer_str(text: str) -> str:
     camel_string = " ".join(x.capitalize() for x in re.split("_|-", text.lower()))
     return camel_string
+
+
+class LogMonitorThread(threading.Thread):
+
+    def close(self):
+        """Close the thread"""
+        self.running = False
+
+    def __init__(self, conatiner, zmq_url: str, context: zmq.Context) -> None:
+        threading.Thread.__init__(self, daemon=True)
+        self.context = context
+
+        self.running = True
+        self.container = conatiner
+
+        self.task_sender = self.context.socket(zmq.PUSH)
+        self.task_sender.connect(zmq_url)
+
+        self.start()
+
+    def run(self):
+        while self.running:
+            try:
+                for log in self.container.logs():
+                    log_str = log.decode('utf-8').strip()
+                    logging.debug(log_str)
+                    self.task_sender.send_multipart([b'LOG', log_str.encode()])
+            except Exception as e:
+                logging.debug(f"An error occurred: {str(e)}")
+        self.task_sender.close()
+
+
+class TimerThread(threading.Thread):
+
+    def close(self):
+        """Close the thread"""
+        self.running = False
+
+    def __init__(self, duration: float, zmq_url: str, context: zmq.Context) -> None:
+        threading.Thread.__init__(self, daemon=True)
+        self.context = context
+        self.duration = duration
+        self.running = True
+        self.task_sender = self.context.socket(zmq.PUSH)
+        self.task_sender.connect(zmq_url)
+
+        self.start()
+
+    def run(self):
+        while self.running:
+            time.sleep(self.duration)
+            self.task_sender.send_multipart([b'TIMER', str(self.duration).encode()])
+
+        self.task_sender.close()
 
 class DockerDashboard:
 
@@ -126,6 +182,11 @@ class DockerDashboard:
 
         # Catch CNTRL-C signel
         signal_handler = SignalHandler()
+        #  Socket to receive messages on
+        zmq_url = "inproc://log_push_pull"
+
+        task_receiver = self.context.socket(zmq.PULL)
+        task_receiver.bind(zmq_url)
 
         args = self.parse_commandline_arguments()
         self.init_logging(args.logfilename, args.verbose)
@@ -246,20 +307,22 @@ class DockerDashboard:
 
         self.get_container_list()
         self.device.config_revision = 1
-        timer = 0
+
+        poller = zmq.Poller()
+        poller.register(task_receiver, zmq.POLLIN)
+
         while signal_handler.can_run():
-            time.sleep(1)
-            timer += 1
-            """
             try:
-                for log in self.container_list[self.container_list_index].logs():
-                    logging.debug(log.decode('utf-8').strip())
-            except Exception as e:
-                logging.debug(f"An error occurred: {str(e)}")
-            """
-            if timer % 10 == 0:
-                self.update_selector_list()
-                timer = 0
+                socks = dict(poller.poll(20))
+            except zmq.error.ContextTerminated:
+                break
+            if task_receiver in socks:
+                msg_from, msg = task_receiver.recv_multipart()
+                logging.debug("From: %s, MSG: %s", msg_from.decode(), msg.decode())
+                if msg_from == b'LOG':
+                    pass
+                if msg_from == b'TIMER':
+                    self.update_selector_list()
 
         self.dash_con.close()
         self.device.close()
