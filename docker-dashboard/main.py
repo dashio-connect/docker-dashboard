@@ -220,6 +220,11 @@ class DockerDashboard:
         while signal_handler.can_run():
             time.sleep(1)
             timer += 1
+            try:
+                for log in self.container_list[self.container_list_index].logs(stream=True, follow=True):
+                    logging.debug(log.decode('utf-8').strip())
+            except Exception as e:
+                logging.debug(f"An error occurred: {str(e)}")
             if timer % 10 == 0:
                 if timer < 59:
                     self.update_selector_list()
