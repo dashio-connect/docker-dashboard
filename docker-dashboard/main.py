@@ -171,7 +171,12 @@ class DockerDashboard:
         self.device.add_control(d_view)
         self.device.config_revision = 2
 
-        self.c_select = dashio.Selector("cs1", "Container", control_position=dashio.ControlPosition(0.0, 0.84375, 0.7727272727272, 0.15625))
+        self.c_select = dashio.Selector(
+            "cs1",
+            "Container",
+            control_position=dashio.ControlPosition(0.0, 0.84375, 0.7727272727272, 0.15625),
+            title_position=dashio.TitlePosition.NONE
+        )
         d_view.add_control(self.c_select)
         self.device.add_control(self.c_select)
 
@@ -196,7 +201,8 @@ class DockerDashboard:
 
         self.controls_menu = dashio.Menu(
             "controls_mnu1",
-            "Controls",
+            "Container Controls",
+            text="",
             title_position=dashio.TitlePosition.NONE,
             control_position=dashio.ControlPosition(0.7727272727272, 0.84375, 0.227272727272727, 0.15625)
         )
@@ -219,9 +225,9 @@ class DockerDashboard:
         self.restart_button = dashio.Button(
             "restartBtn",
             "Restart",
-            icon_name=dashio.Icon.REFRESH,
-            on_color=dashio.Color.DARK_GOLDEN_ROD,
-            off_color=dashio.Color.DARK_GOLDEN_ROD
+            icon_name=dashio.Icon.COG,
+            on_color=dashio.Color.FIREBRICK,
+            off_color=dashio.Color.FIREBRICK
         )
         self.controls_menu.add_control(self.restart_button)
         self.device.add_control(self.restart_button)
