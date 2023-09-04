@@ -309,7 +309,7 @@ class DockerDashboard:
         self.get_container_list()
         self.device.config_revision = 1
 
-        self.cont_logs = LogMonitorThread()
+        # self.cont_logs = LogMonitorThread()
 
         poller = zmq.Poller()
         poller.register(task_receiver, zmq.POLLIN)
