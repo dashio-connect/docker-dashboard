@@ -52,10 +52,11 @@ class LogMonitorThread(threading.Thread):
     def run(self):
         while self.running:
             try:
-                for log in self.container.logs(stream=True, follow=True, timestamps=True, since=datetime.datetime.utcnow()):
-                    logging.debug("LOG: %s", log)
-                    log_str = log.decode('utf-8').strip()
-                    self.task_sender.send_multipart([b'LOG', log_str.encode()])
+                if self.container.status == "running":
+                    for log in self.container.logs(stream=True, follow=True, timestamps=True, since=datetime.datetime.utcnow()):
+                        logging.debug("LOG: %s", log)
+                        log_str = log.decode('utf-8').strip()
+                        self.task_sender.send_multipart([b'LOG', log_str.encode()])
                 time.sleep(1.0)
             except Exception as e:
                 logging.debug(f"An error occurred: {str(e)}")
@@ -287,7 +288,7 @@ class DockerDashboard:
             text="",
             title_position=dashio.TitlePosition.NONE,
             icon_name=dashio.Icon.PLAY,
-            on_color=dashio.Color.LIME,
+            on_color=dashio.Color.SEA_GREEN,
             off_color=dashio.Color.RED
         )
         self.controls_menu.add_control(self.start_stop_button)
