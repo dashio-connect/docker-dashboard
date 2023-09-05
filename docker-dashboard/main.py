@@ -50,7 +50,7 @@ class LogMonitorThread(threading.Thread):
     def run(self):
         while self.running:
             try:
-                for log in self.container.logs(stream=True, follow=True):
+                for log in self.container.logs(stream=True, follow=True, timestamps=True):
                     logging.debug("%s", log)
                     # log_str = log.decode('utf-8').strip()
                     # self.task_sender.send_multipart([b'LOG', log_str.encode()])
@@ -311,7 +311,7 @@ class DockerDashboard:
         self.get_container_list()
         self.device.config_revision = 1
 
-        self.cont_logs = LogMonitorThread(self.container_list[self.container_list_index], self.zmq_url, self.context)
+        # self.cont_logs = LogMonitorThread(self.container_list[self.container_list_index], self.zmq_url, self.context)
 
         poller = zmq.Poller()
         poller.register(task_receiver, zmq.POLLIN)
@@ -335,3 +335,4 @@ class DockerDashboard:
 
 if __name__ == "__main__":
     DockerDashboard()
+
