@@ -54,8 +54,8 @@ class LogMonitorThread(threading.Thread):
             try:
                 for log in self.container.logs(stream=True, follow=True, timestamps=True, since=datetime.datetime.now()):
                     logging.debug("%s", log)
-                    # log_str = log.decode('utf-8').strip()
-                    # self.task_sender.send_multipart([b'LOG', log_str.encode()])
+                    log_str = log.decode('utf-8').strip()
+                    self.task_sender.send_multipart([b'LOG', log_str.encode()])
             except Exception as e:
                 logging.debug(f"An error occurred: {str(e)}")
         self.task_sender.close()
