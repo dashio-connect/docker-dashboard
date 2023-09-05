@@ -142,6 +142,8 @@ class DockerDashboard:
             return
         self.c_select.position = c_index
         self.update_container_controls(c_index)
+        self.cont_logs.close()
+        self.cont_logs = LogMonitorThread(self.container_list[self.container_list_index], self.zmq_url, self.context)
 
     def start_stop_rx(self, rx_msg):
         logging.debug("Start Stop Btn RX: %s", rx_msg)
@@ -183,11 +185,11 @@ class DockerDashboard:
         # Catch CNTRL-C signel
         signal_handler = SignalHandler()
         #  Socket to receive messages on
-        zmq_url = "inproc://log_push_pull"
+        self.zmq_url = "inproc://log_push_pull"
         self.context = zmq.Context.instance()
         task_receiver = self.context.socket(zmq.PULL)
-        task_receiver.bind(zmq_url)
-        self.timer = TimerThread(10.0, zmq_url, self.context)
+        task_receiver.bind(self.zmq_url)
+        self.timer = TimerThread(10.0, self.zmq_url, self.context)
         args = self.parse_commandline_arguments()
         self.init_logging(args.logfilename, args.verbose)
 
