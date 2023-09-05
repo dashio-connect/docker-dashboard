@@ -130,7 +130,6 @@ class DockerDashboard:
     def update_container_controls(self, index: int):
         self.container_list_index = index
         current_container = self.container_list[index]
-        self.status_tx.text = current_container.status
         if current_container.status == "running":
             self.start_stop_button.send_button(dashio.ButtonState.OFF, dashio.Icon.STOP, "Stop")
         else:
@@ -254,16 +253,16 @@ class DockerDashboard:
         self.c_select.add_receive_message_callback(self.container_selection)
         self.dash_con.add_device(self.device)
 
-        self.status_tx = dashio.TextBox(
-            "statusTx",
-            "Status",
+        self.log_txbx = dashio.TextBox(
+            "logTextBox",
+            "Container Log",
             title_position=dashio.TitlePosition.TOP,
             text_align=dashio.TextAlignment.CENTER,
             keyboard_type=dashio.Keyboard.NONE,
-            control_position=dashio.ControlPosition(0.0, 0.5625, 1.0, 0.125)
+            control_position=dashio.ControlPosition(0.0, 0.0, 1.0, 0.84375)
         )
-        d_view.add_control(self.status_tx)
-        self.device.add_control(self.status_tx)
+        d_view.add_control(self.log_txbx)
+        self.device.add_control(self.log_txbx)
 
         self.controls_menu = dashio.Menu(
             "controls_mnu1",
@@ -327,6 +326,7 @@ class DockerDashboard:
                 msg_from, msg = task_receiver.recv_multipart()
                 logging.debug("From: %s, MSG: %s", msg_from.decode(), msg.decode())
                 if msg_from == b'LOG':
+                    self.log_txbx.text = msg.decode()
                     pass
                 if msg_from == b'TIMER':
                     self.update_selector_list()
