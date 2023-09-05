@@ -168,13 +168,19 @@ class DockerDashboard:
 
     def update_selector_list(self):
         self.c_select.selection_list.clear()
+        send_select = False
         for container in self.container_list:
             cont_name = to_nicer_str(container.name)
             if container.status == "running":
-                self.c_select.add_selection("✅: " + cont_name)
+                c_status = "✅: "
             else:
+                c_status = "❌: "
+            cont_name = c_status + cont_name
+            if cont_name not in self.c_select.selection_list:
                 self.c_select.add_selection("❌: " + cont_name)
-        self.c_select.send_selection(self.container_list_index)
+                send_select = True
+        if send_select:
+            self.c_select.send_selection(self.container_list_index)
 
     def get_container_list(self):
         self.container_list = self.docker_client.containers.list(all=True)
