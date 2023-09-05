@@ -177,7 +177,7 @@ class DockerDashboard:
                 c_status = "❌: "
             cont_name = c_status + cont_name
             if cont_name not in self.c_select.selection_list:
-                self.c_select.add_selection("❌: " + cont_name)
+                self.c_select.add_selection(cont_name)
                 send_select = True
         if send_select:
             self.c_select.send_selection(self.container_list_index)
