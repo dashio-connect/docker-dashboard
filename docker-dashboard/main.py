@@ -52,7 +52,6 @@ class LogMonitorThread(threading.Thread):
             try:
                 for log in self.container.logs():
                     log_str = log.decode('utf-8').strip()
-                    logging.debug(log_str)
                     self.task_sender.send_multipart([b'LOG', log_str.encode()])
             except Exception as e:
                 logging.debug(f"An error occurred: {str(e)}")
