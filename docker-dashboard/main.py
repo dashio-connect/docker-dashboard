@@ -132,6 +132,7 @@ class DockerDashboard:
     def update_container_controls(self, index: int):
         self.container_list_index = index
         current_container = self.container_list[index]
+        self.cont_name_txbx.text = to_nicer_str(current_container.name)
         if current_container.status == "running":
             self.start_stop_button.send_button(dashio.ButtonState.OFF, dashio.Icon.STOP, "Stop")
         else:
@@ -283,7 +284,7 @@ class DockerDashboard:
         self.device.add_control(self.controls_menu)
 
         self.start_stop_button = dashio.Button(
-            "startStopBtn",
+            "5_startStopBtn",
             "startstop",
             text="",
             title_position=dashio.TitlePosition.NONE,
@@ -296,7 +297,7 @@ class DockerDashboard:
         self.start_stop_button.add_receive_message_callback(self.start_stop_rx)
 
         self.restart_button = dashio.Button(
-            "restartBtn",
+            "4_restartBtn",
             "Restart",
             icon_name=dashio.Icon.REFRESH,
             on_color=dashio.Color.FIREBRICK,
@@ -306,8 +307,17 @@ class DockerDashboard:
         self.device.add_control(self.restart_button)
         self.restart_button.add_receive_message_callback(self.restart_rx)
 
+        self.cont_name_txbx = dashio.TextBox(
+            "3_contNameTxtBx",
+            "",
+            text_align=dashio.TextAlignment.CENTER,
+            keyboard_type=dashio.Keyboard.NONE
+        )
+        self.controls_menu.add_control(self.cont_name_txbx)
+        self.device.add_control(self.cont_name_txbx)
+
         self.rescan_containers_button = dashio.Button(
-            "rescanBtn",
+            "2_rescanBtn",
             "Rescan Containers",
             icon_name=dashio.Icon.COG,
             on_color=dashio.Color.DARK_GOLDEN_ROD,
@@ -316,6 +326,9 @@ class DockerDashboard:
         self.controls_menu.add_control(self.rescan_containers_button)
         self.device.add_control(self.rescan_containers_button)
         self.rescan_containers_button.add_receive_message_callback(self.rescan_rx)
+
+        d_view.add_control(self.log_txbx)
+        self.device.add_control(self.log_txbx)
 
         self.get_container_list()
         self.device.config_revision = 1
