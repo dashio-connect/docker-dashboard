@@ -167,7 +167,7 @@ class DockerDashboard:
         self.get_container_list()
 
     def update_selector_list(self):
-        self.c_select.selection_list.clear()
+        # self.c_select.selection_list.clear()
         send_select = False
         for container in self.container_list:
             cont_name = to_nicer_str(container.name)
