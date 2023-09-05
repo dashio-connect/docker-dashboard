@@ -338,4 +338,3 @@ class DockerDashboard:
 
 if __name__ == "__main__":
     DockerDashboard()
-
