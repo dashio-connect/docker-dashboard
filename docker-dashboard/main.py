@@ -327,8 +327,8 @@ class DockerDashboard:
                 msg_from, msg = task_receiver.recv_multipart()
                 logging.debug("From: %s, MSG: %s", msg_from.decode(), msg.decode())
                 if msg_from == b'LOG':
+                    # this should be a different control
                     self.log_txbx.text = msg.decode()
-                    pass
                 if msg_from == b'TIMER':
                     self.update_selector_list()
 
