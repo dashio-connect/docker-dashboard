@@ -176,10 +176,9 @@ class DockerDashboard:
             running_cont_name = "✅: " + cont_name
             exited_cont_name = "❌: " + cont_name
             if container.status == "running":
-                c_status = "✅: "
+                cont_name = running_cont_name
             else:
-                c_status = "❌: "
-            cont_name = c_status + cont_name
+                cont_name = exited_cont_name
             if running_cont_name not in self.c_select.selection_list and exited_cont_name not in self.c_select.selection_list:
                 self.c_select.add_selection(cont_name)
                 send_select = True
@@ -347,7 +346,6 @@ class DockerDashboard:
                 break
             if task_receiver in socks:
                 msg_from, msg = task_receiver.recv_multipart()
-                logging.debug("From: %s, MSG: %s", msg_from.decode(), msg.decode())
                 if msg_from == b'LOG':
                     # this should be a different control
                     self.log_txbx.text = msg.decode()
