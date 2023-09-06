@@ -173,12 +173,14 @@ class DockerDashboard:
         send_select = False
         for container in self.container_list:
             cont_name = to_nicer_str(container.name)
+            running_cont_name = "✅: " + cont_name
+            exited_cont_name = "❌: " + cont_name
             if container.status == "running":
                 c_status = "✅: "
             else:
                 c_status = "❌: "
             cont_name = c_status + cont_name
-            if cont_name not in self.c_select.selection_list:
+            if running_cont_name not in self.c_select.selection_list and exited_cont_name not in self.c_select.selection_list:
                 self.c_select.add_selection(cont_name)
                 send_select = True
         if send_select:
