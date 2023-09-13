@@ -266,6 +266,7 @@ class DockerDashboard:
         self.log_txbx = dashio.TextBox(
             "logTextBox",
             "Container Log",
+            text_format=dashio.TextFormat.LOG,
             title_position=dashio.TitlePosition.TOP,
             text_align=dashio.TextAlignment.CENTER,
             keyboard_type=dashio.Keyboard.NONE,
@@ -348,7 +349,9 @@ class DockerDashboard:
                 msg_from, msg = task_receiver.recv_multipart()
                 if msg_from == b'LOG':
                     # this should be a different control
-                    self.log_txbx.text = msg.decode()
+                    lines = msg.decode().split('\n')
+                    for line in lines:
+                        self.log_txbx.text = line
                 if msg_from == b'TIMER':
                     self.update_selector_list()
 
