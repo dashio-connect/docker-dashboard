@@ -272,7 +272,7 @@ class DockerDashboard:
             keyboard_type=dashio.Keyboard.NONE,
             control_position=dashio.ControlPosition(0.0, 0.0, 1.0, 0.84375)
         )
-        self.log_txbx.color = dashio.Color.DARK_SLATE_BLUE
+        self.log_txbx.color = dashio.Color.ALICE_BLUE
         d_view.add_control(self.log_txbx)
         self.device.add_control(self.log_txbx)
 
