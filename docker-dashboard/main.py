@@ -268,10 +268,11 @@ class DockerDashboard:
             "Container Log",
             text_format=dashio.TextFormat.LOG,
             title_position=dashio.TitlePosition.TOP,
-            text_align=dashio.TextAlignment.CENTER,
+            text_align=dashio.TextAlignment.LEFT,
             keyboard_type=dashio.Keyboard.NONE,
             control_position=dashio.ControlPosition(0.0, 0.0, 1.0, 0.84375)
         )
+        self.log_txbx.color = dashio.Color.DARK_SLATE_BLUE
         d_view.add_control(self.log_txbx)
         self.device.add_control(self.log_txbx)
 
@@ -328,9 +329,6 @@ class DockerDashboard:
         self.controls_menu.add_control(self.rescan_containers_button)
         self.device.add_control(self.rescan_containers_button)
         self.rescan_containers_button.add_receive_message_callback(self.rescan_rx)
-
-        d_view.add_control(self.log_txbx)
-        self.device.add_control(self.log_txbx)
 
         self.get_container_list()
         self.device.config_revision = 1
