@@ -30,5 +30,5 @@ sudo ./install.sh
 Edit `docker-dashboard/docker-dashboard.ini` and replace the username and password with your username and password for your DashIO server account.
 
 ```sh
-sudo systemctl restart docker-dashboard.service
+python3 docker-dashboard/main.py -v2
 ```
